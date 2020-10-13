@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from "@angular/core";
 import { DatatableComponent, ColumnMode } from "@swimlane/ngx-datatable";
-import { usersListData } from "./data/users-list.data";
+import { CorporatesListService } from '../_services/corporates-list.service';
+import { CorporatesI } from '../_models/corporates.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: "app-corporates-list",
@@ -15,26 +17,31 @@ export class CorporatesListComponent implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // row data
-  public rows = usersListData;
+  public rows: CorporatesI[] = [];
   public ColumnMode = ColumnMode;
   public limitRef = 10;
 
   // column header
   public columns = [
-    { name: "ID", prop: "ID" },
-    { name: "Username", prop: "Username" },
-    { name: "Name", prop: "Name" },
-    { name: "Last Activity", prop: "Last Activity" },
-    { name: "Verified", prop: "Verified" },
-    { name: "Role", prop: "Role" },
-    { name: "Status", prop: "Status" },
-    { name: "Actions", prop: "Actions" },
+    { name: "LOGO", prop: "LOGO" },
+    { name: "URL", prop: "URL" },
+    { name: "INCORPORACIÓN", prop: "INCORPORACIÓN" },
+    { name: "CREADO EL", prop: "CREADO EL" },
+    { name: "ASIGNADO A", prop: "ASIGNADO A" },
+    { name: "STATUS", prop: "STATUS" },
+    { name: "ACCIONES", prop: "ACCIONES" },
   ];
 
   // private
   private tempData = [];
-  constructor() {
-    this.tempData = usersListData;
+  constructor(private corporates: CorporatesListService) {
+    //this.tempData = usersListData;
+     console.log("Corporaciones");
+     this.corporates.getCorporates().subscribe((res) => {
+       console.log(res);
+       this.rows = res;
+       console.log(this.rows);
+     });
   }
 
   // Public Methods
@@ -68,5 +75,7 @@ export class CorporatesListComponent implements OnInit {
     this.limitRef = limit.target.value;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+   
+  }
 }
