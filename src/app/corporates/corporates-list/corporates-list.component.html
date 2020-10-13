@@ -8,7 +8,7 @@
           <div class="row border rounded py-2 mb-2 mx-n2">
             <div class="col-12 col-sm-6 col-lg-3">
               <label for="users-list-verified">Verified</label>
-              <fieldset class="form-group">
+              <fieldset class="form-group" disabled>
                 <select id="users-list-verified" class="form-control">
                   <option value="">Any</option>
                   <option value="Yes">Yes</option>
@@ -19,7 +19,7 @@
 
             <div class="col-12 col-sm-6 col-lg-3">
               <label for="users-list-role">Role</label>
-              <fieldset class="form-group">
+              <fieldset class="form-group" disabled>
                 <select id="users-list-role" class="form-control">
                   <option value="">Any</option>
                   <option value="User">User</option>
@@ -30,7 +30,7 @@
 
             <div class="col-12 col-sm-6 col-lg-3">
               <label for="users-list-status">Status</label>
-              <fieldset class="form-group">
+              <fieldset class="form-group" disabled>
                 <select id="users-list-status" class="form-control">
                   <option value="">Any</option>
                   <option value="Active">Active</option>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-center">
-              <button type="reset" class="btn btn-primary btn-block users-list-clear glow mb-0">
+              <button type="reset" class="btn btn-primary btn-block users-list-clear glow mb-0" disabled>
                 Clear
               </button>
             </div>
@@ -74,38 +74,66 @@
             <ngx-datatable class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force" [headerHeight]="50"
               [footerHeight]="50" rowHeight="auto" [limit]="limitRef" [rows]="rows" [scrollbarH]="true"
               [columns]="columns">
-              <ngx-datatable-column name="ID" prop="ID" [width]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="Username" prop="Username" [width]="150">
+              <ngx-datatable-column name="LOGO" prop="LOGO" [width]="150">
                 <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
-                  <div class="d-flex align-items-center">
-                    <img class="rounded-circle mr-1" src="assets/img/portrait/small/{{
-                        row.avatar
-                      }}" height="32" width="32" alt="datatable-avatar" />
-
-                    <div class="cell-line-height">
-                      <a class="line-height-1 mb-0" routerLink="/pages/users-view">{{ name }}</a>
+                  <div class="row align-items-center">
+                    <div class="col-4">
+                      <img class="rounded-circle" src="{{row.S_LogoURL}}" height="32" width="32" alt="datatable-avatar" />
+                    </div>
+                    <div class="col-8">
+                    <div class="row">
+                      <a class="line-height-1 font-weight-bold" routerLink="/pages/users-view">{{ row.S_NombreCorto }}</a>
+                    </div>
+                    <div class="row">
+                      <a class="line-height-1 font-weight-light" routerLink="/pages/users-view">{{ row.S_NombreCompleto }}</a>
+                    </div>
                     </div>
                   </div>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="Name" prop="Name" [width]="150"></ngx-datatable-column>
-              <ngx-datatable-column name="Last Activity" prop="Last Activity" [width]="120"></ngx-datatable-column>
-              <ngx-datatable-column name="Verified" prop="Verified" [width]="70"></ngx-datatable-column>
-              <ngx-datatable-column name="Role" prop="Role" [width]="70"></ngx-datatable-column>
-              <ngx-datatable-column name="Status" prop="Status" [width]="70">
-                <ng-template let-status="value" ngx-datatable-cell-template>
-                  <div class="badge" [ngClass]="{
-                      'bg-light-success': status == 'Active',
-                      'bg-light-danger': status == 'Banned',
-                      'bg-light-warning': status == 'Close'
-                    }">
-                    {{ status }}
+              <ngx-datatable-column name="URL" prop="URL" [width]="150">
+                <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                  <div class="d-flex align-items-center">
+                    <a class="line-height-1" href="devschoolcloud.com/sa/#/{{row.S_SystemUrl}}">devschoolcloud.com/sa/#/{{row.S_SystemUrl}}</a>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="INCORPORACIÓN" prop="INCORPORACIÓN" [width]="100">
+                <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                  <div class="d-flex align-items-center">
+                    <p class="line-height-1">{{row.D_FechaIncorporacion | date: 'dd MMM yyyy'}}</p>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="CREADO EL" prop="CREADO EL" [width]="100">
+                <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                  <div class="d-inline align-items-center">
+                    <p class="line-height-1">{{row.asignado.created_at | date: 'dd MMM yyyy'}}</p>
+                    <p class="line-height-1 font-weight-light">Por {{row.asignado.S_Nombre}}</p>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="ASIGNADO A" prop="ASIGNADO A" [width]="70">
+                <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                  <div class="d-flex align-items-center">
+                    <p class="line-height-1">{{row.asignado.S_Nombre}}</p>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="STATUS" prop="STATUS" [width]="70">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div *ngIf="row.S_Activo == 1" class="badge bg-light-success">
+                    Activo
+                  </div>
+                  <div *ngIf="row.S_Activo == 0" class="badge bg-light-danger">
+                    Activo
                   </div>
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="Actions" [width]="50">
-                <ng-template ngx-datatable-cell-template>
-                  <a routerLink="/pages/users-edit"><i class="ft-edit text-primary cursor-pointer"></i></a>
+                <ng-template ngx-datatable-cell-template >
+                  <a routerLink="/pages/users-edit"><i class="ft-eye text-primary cursor-pointer"></i></a>
+                  <a routerLink="/pages/users-edit"><i class="ft-check-square text-primary cursor-pointer"></i></a>
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>
