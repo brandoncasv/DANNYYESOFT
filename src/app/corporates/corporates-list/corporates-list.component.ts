@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from "@angular/core";
 import { DatatableComponent, ColumnMode } from "@swimlane/ngx-datatable";
-import { CorporatesListService } from '../_services/corporates-list.service';
-import { CorporatesI } from '../_models/corporates.interface';
-import { Observable } from 'rxjs';
+import { CorporatesService } from "../_services/corporates.service";
+import { CorporatesI } from "../_models/corporates.interface";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-corporates-list",
@@ -34,14 +34,12 @@ export class CorporatesListComponent implements OnInit {
 
   // private
   private tempData = [];
-  constructor(private corporates: CorporatesListService) {
+  constructor(private corporatesSvc: CorporatesService) {
     //this.tempData = usersListData;
-     console.log("Corporaciones");
-     this.corporates.getCorporates().subscribe((res) => {
-       console.log(res);
-       this.rows = res;
-       console.log(this.rows);
-     });
+    console.log("Corporaciones");
+    this.corporatesSvc.getCorporates().subscribe((res) => {
+      this.rows = res;      
+    });
   }
 
   // Public Methods
@@ -75,7 +73,5 @@ export class CorporatesListComponent implements OnInit {
     this.limitRef = limit.target.value;
   }
 
-  ngOnInit(): void {
-   
-  }
+  ngOnInit(): void {}
 }
