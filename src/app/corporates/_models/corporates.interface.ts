@@ -1,5 +1,5 @@
-export interface ResponseI {
-    data: CorporatesI[];
+export interface ResponseCorporatesI {
+  data: CorporatesI[];
 }
 export interface CorporatesI {
   D_FechaIncorporacion: Date;
