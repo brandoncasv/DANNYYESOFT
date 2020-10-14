@@ -35,7 +35,8 @@ const routes: Routes = [
         data: {
           title: 'Login '
         }
-      }
+      },
+      
     ]
   }
 ];
