@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ViewChild, OnDestroy } from "@angular/core";
 import { DatatableComponent, ColumnMode } from "@swimlane/ngx-datatable";
 import { CorporatesService } from "../_services/corporates.service";
 import { CorporatesI } from "../_models/corporates.interface";
-import { Observable } from "rxjs";
+import {  Observable, Subscription } from "rxjs";
 
 @Component({
   selector: "app-corporates-list",
@@ -13,13 +13,14 @@ import { Observable } from "rxjs";
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class CorporatesListComponent implements OnInit {
+export class CorporatesListComponent implements OnInit, OnDestroy {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // row data
-  public rows: CorporatesI[] = [];
+  public rows: Observable<CorporatesI[]>;
   public ColumnMode = ColumnMode;
   public limitRef = 10;
+  listCorporates: Observable<CorporatesI[]>;
 
   // column header
   public columns = [
@@ -36,10 +37,6 @@ export class CorporatesListComponent implements OnInit {
   private tempData = [];
   constructor(private corporatesSvc: CorporatesService) {
     //this.tempData = usersListData;
-    console.log("Corporaciones");
-    this.corporatesSvc.getCorporates().subscribe((res) => {
-      this.rows = res;      
-    });
   }
 
   // Public Methods
@@ -59,7 +56,7 @@ export class CorporatesListComponent implements OnInit {
     });
 
     // update the rows
-    this.rows = temp;
+    //this.rows = temp;
     // Whenever the filter changes, always go back to the first page
     this.table.offset = 0;
   }
@@ -73,5 +70,13 @@ export class CorporatesListComponent implements OnInit {
     this.limitRef = limit.target.value;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.rows = this.corporatesSvc
+      .getCorporates();
+    console.log(this.listCorporates);
+  }
+
+  ngOnDestroy() {
+    //this.listCorporates.unsubscribe();
+  }
 }
