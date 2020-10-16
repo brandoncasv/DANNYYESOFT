@@ -3,20 +3,21 @@
     <div class="col-12">
       <div class="card">
         <div class="card-content">
-          <div class="card-body">
+          <div class="card-body" *ngIf="corporateArray | async as corporate">
             <!-- Nav-tabs -->
-            <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav-tabs justify-content-left">
+            <ul ngbNav #nav="ngbNav" [activeId]="1"
+            class="nav-tabs justify-content-left" >
               <li [ngbNavItem]="1">
                 <a ngbNavLink class="nav-link d-flex align-items-center">
                   <i class="ft-user mr-1"></i>
                   <span class="d-none d-sm-block">Datos Generales</span>
                 </a>
-                <ng-template ngbNavContent *ngIf="corporate$ | async as corporate;">
+                <ng-template ngbNavContent>
                   <!-- Account content starts -->
                   <div class="mt-2" id="datos_generales">
                     <!-- Media object starts -->
                     <div class="media">
-                      <img src="{{corporate.S_LogoURL}}" alt="user edit avatar"
+                      <img src="{{corporate.S_LogoURL}}" alt="corporate edit avatar"
                         class="users-avatar-shadow avatar mr-3 rounded-circle" height="64" width="64">
                       <div class="media-body">
                         <h4>{{corporate.S_NombreCorto}}</h4>
@@ -24,22 +25,23 @@
                     </div>
                     <!-- Media object ends -->
 
-                    <!-- Account form starts -->
-                    <form novalidate>
+                    <!-- Account form starts   [formGroup]="corporativoForm"-->
+                    <form (ngSubmit)="onSaveForm()" novalidate>
                       <div class="row">
                         <div class="col-4 col-md-4">
                           <div class="form-group">
                             <div class="controls">
-                              <label for="users-edit-username">NOMBRE CORTO</label>
-                              <input type="text" id="users-edit-username" class="form-control" placeholder="" [disabled]="!formValidator"
-                              value="{{corporate.S_NombreCorto}}" required aria-invalid="false">
+                              <label for="corporate-edit-short-name">NOMBRE CORTO</label>
+                              <input type="text" id="corporate-edit-short-name" class="form-control" [disabled]="!formValidator"
+                              [(ngModel)]="corporate.S_NombreCorto" required aria-invalid="false"  name="nombre-corto">
                             </div>
                           </div>
                           <div class="form-group">
                             <div class="controls">
-                              <label for="users-edit-name">FECHA DE INCORPORACIÓN*</label>
-                              <input type="date" id="users-edit-name" class="form-control" 
-                                value="{{corporate.D_FechaIncorporacion | date: 'yyyy-MM-dd'}}" required aria-invalid="false" [disabled]="!formValidator">
+                              <label for="corporate-edit-fecha-incorporacion">FECHA DE INCORPORACIÓN*</label>
+                              <input type="date" id="corporate-edit-fecha-incorporacion" class="form-control" placeholder="yyyy-MM-dd" 
+                                [ngModel]="corporate.D_FechaIncorporacion | date: 'yyyy-MM-dd'" (ngModelChange)="corporate.D_FechaIncorporacion=$event" 
+                                required aria-invalid="false" name="fecha-incorporacion" [disabled]="!formValidator">
                             </div>
                           </div>
                         </div>
@@ -48,15 +50,16 @@
                           <div class="form-group">
                             <div class="controls">
                               <label for="users-edit-name">NOMBRE COMPLETO</label>
-                              <input type="text" id="users-edit-name" class="form-control" placeholder="Name" [disabled]="!formValidator"
-                                value="{{corporate.S_NombreCompleto}}" required aria-invalid="false">
+                              <input type="text" id="users-edit-name" class="form-control"
+                                [(ngModel)]="corporate.S_NombreCompleto" required aria-invalid="false" 
+                                name="nombre-completo" [disabled]="!formValidator">
                             </div>
                           </div>
                           <div class="form-group">
                             <div class="controls">
                               <label for="users-edit-name">URL DEL SISTEMA*</label>
                               <input type="text" id="users-edit-name" class="form-control" placeholder="Name" [disabled]="!formValidator"
-                                value="{{corporate.S_SystemUrl}}" required aria-invalid="false">
+                                [(ngModel)]="corporate.S_SystemUrl" required aria-invalid="false" name="url-sistema">
                             </div>
                           </div>
                         </div>
@@ -64,8 +67,9 @@
                           <div class="form-group">
                             <div class="controls">
                               <label for="users-edit-status">STATUS</label>
-                              <select id="users-edit-status" class="form-control" required [disabled]="!formValidator">
+                              <select id="users-edit-status" class="form-control" [disabled]="!formValidator" name="status" required [(ngModel)]="corporate.S_Activo">
                                 <option value="">Select Status</option>
+                                <option value="0">Inactive</option>                                
                                 <option value="1">Active</option>
                                 <option value="2">Banned</option>
                                 <option value="3">Close</option>
@@ -76,8 +80,8 @@
 
                         <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-3 mt-sm-2">
                           <button type="button" class="btn btn-primary mb-2 mb-sm-0 mr-sm-2" (click)="goToCorporates()">Regresar</button>
-                          <button type="button" class="btn btn-secondary" (click)="stateForm()" *ngIf="!formValidator">Editar</button>
-                          <button type="submit" class="btn btn-secondary" (click)="stateForm()" *ngIf="formValidator">Guardar Cambios</button>
+                          <button type="submit" class="btn btn-secondary" (click)="onSaveForm()" *ngIf="!formValidator">Editar</button>
+                          <button type="submit" class="btn btn-secondary" (click)="onSaveForm()" *ngIf="formValidator">Guardar Cambios</button>
                         </div>
                       </div>
                     </form>
@@ -88,116 +92,159 @@
               </li>
               <li [ngbNavItem]="2">
                 <a ngbNavLink class="nav-link d-flex align-items-center">
-                  <i class="ft-info mr-1"></i>
-                  <span class="d-none d-sm-block">Information</span>
+                  <i class="ft-users mr-1"></i>
+                  <span class="d-none d-sm-block">Contactos</span>
                 </a>
-                <ng-template ngbNavContent>
-                  <!-- Information content starts -->
+                <ng-template ngbNavContent >
+                  <!-- Contacts content starts -->
                   <div class="mt-2" id="information">
-                    <!-- Information form starts -->
-                    <form novalidate>
+                    <div class="media">
+                      <img src="{{corporate.S_LogoURL}}" alt="corporate edit avatar"
+                          class="users-avatar-shadow avatar mr-3 rounded-circle" height="64" width="64">
+                      <div class="media-body">
+                        <h4>Contactos</h4>
+                      </div>
+                    </div>
+                    <!-- Contacts Table starts -->
+                    <ngx-datatable class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force" [headerHeight]="50"
+                          [footerHeight]="50" rowHeight="auto" [limit]="limitRef" [rows]="rows" [scrollbarH]="true"
+                          [columns]="columns">
+                      <ngx-datatable-column name="NOMBRE" prop="NOMBRE" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.S_Nombre}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="PUESTO" prop="PUESTO" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.S_Puesto}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="TELÉFONO" prop="TELÉFONO" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.N_TelefonoFijo}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="CELULAR" prop="CELULAR" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.N_TelefonoMovil}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="EMAIL" prop="EMAIL" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.S_Email}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="OBSERVACIONES" prop="OBSERVACIONES" [width]="150">
+                        <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                          <div class="d-flex align-items-center">
+                            <a class="line-height-1">{{row.S_Comentarios}}</a>
+                          </div>
+                        </ng-template>
+                      </ngx-datatable-column>
+                      <ngx-datatable-column name="ACTIONS" [width]="50">
+                        <ng-template let-row="row" ngx-datatable-cell-template >
+                          <a (click)="selecContact(row)">
+                            <i class="ft-check-square text-primary cursor-pointer"></i>
+                          </a>
+                          <a (click)="deleteContact(row.id)">
+                            <i class="ft-trash-2 text-primary cursor-pointer"></i>
+                          </a>
+                        </ng-template>
+                      </ngx-datatable-column>
+
+                    </ngx-datatable>
+                    <!-- Contacts Table starts -->
+
+                    <!-- Contact form starts -->
+                    <form  (ngSubmit)="createOrUpdate()" novalidate>
                       <div class="row">
-                        <div class="col-12 col-md-6 mb-3 mb-md-0">
-                          <h4 class="mb-3"><i class="ft-link mr-2"></i>Social Links</h4>
+                        <div class="col-3 col-md-3">
                           <div class="form-group">
-                            <label for="users-edit-twitter">Twitter</label>
-                            <input type="text" id="users-edit-twitter" class="form-control"
-                              value="https://www.twitter.com/">
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-facebook">Facebook</label>
-                            <input type="text" id="users-edit-facebook" class="form-control"
-                              value="https://www.facebook.com/">
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-google">Google+</label>
-                            <input type="text" id="users-edit-google" class="form-control">
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-linkedin">LinkedIn</label>
-                            <input type="text" id="users-edit-linkedin" class="form-control">
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-instagram">Instagram</label>
-                            <input type="text" id="users-edit-instagram" class="form-control"
-                              value="https://www.instagram.com/">
-                          </div>
-                        </div>
-
-                        <div class="col-12 col-md-6 mb-2 mb-md-0">
-                          <h4 class="mb-3"><i class="ft-user mr-2"></i>Personal Info</h4>
-                          <div class="form-group">
-                            <div class="controls position-relative">
-                              <label for="users-edit-bday">Birth date</label>
-                              <input type="text" id="users-edit-bday" class="form-control birthdate-picker" required
-                                placeholder="Birth date">
+                            <div class="controls">
+                              <label for="corporate-edit-short-name">NOMBRE</label>
+                              <input type="text" id="corporate-edit-short-name" class="form-control"
+                              required aria-invalid="false"  name="nombre" [(ngModel)]="contactNew.S_Nombre">
                             </div>
                           </div>
                           <div class="form-group">
                             <div class="controls">
-                              <label for="users-edit-country">Country</label>
-                              <select id="users-edit-country" class="form-control" required>
-                                <option value="">Select Country</option>
-                                <option value="USA">USA</option>
-                                <option value="UK">UK</option>
-                                <option value="India">India</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-languages">Languages</label>
-                            <ng-select [multiple]="true" [(ngModel)]="selectedLanguages" [ngModelOptions]="{standalone: true}">
-                              <ng-option *ngFor="let language of languages" [value]="language.value">{{language.name}}
-                              </ng-option>
-                            </ng-select>
-                          </div>
-                          <div class="form-group">
-                            <div class="controls">
-                              <label for="users-edit-phone">Phone</label>
-                              <input type="text" id="users-edit-phone" class="form-control" placeholder="Phone Number"
-                                required value="(+656) 254 2568">
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <div class="controls">
-                              <label for="users-edit-address">Address</label>
-                              <input type="text" id="users-edit-address" class="form-control" placeholder="Address"
-                                required>
+                              <label for="corporate-edit-fecha-incorporacion">TELÉFONO FIJO</label>
+                              <input type="number" id="corporate-edit-fecha-incorporacion" class="form-control"
+                                required aria-invalid="false" name="telefono" [(ngModel)]="contactNew.N_TelefonoFijo">
                             </div>
                           </div>
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-3 col-md-3">
                           <div class="form-group">
-                            <label for="users-edit-website">Website</label>
-                            <input type="text" id="users-edit-website" class="form-control"
-                              placeholder="Website Address">
+                            <div class="controls">
+                              <label for="users-edit-name">PUESTO</label>
+                              <input type="text" id="users-edit-name" class="form-control"
+                                required aria-invalid="false" 
+                                name="puesto" [(ngModel)]="contactNew.S_Puesto">
+                            </div>
                           </div>
+
                           <div class="form-group">
-                            <label for="users-edit-music">Favourite Music</label>
-                            <ng-select [multiple]="true" [(ngModel)]="selectedMusic" [ngModelOptions]="{standalone: true}">
-                              <ng-option *ngFor="let m of music" [value]="m.value">{{m.name}}
-                              </ng-option>
-                            </ng-select>
-                          </div>
-                          <div class="form-group">
-                            <label for="users-edit-movies">Favourite Movies</label>
-                            <ng-select [multiple]="true" [(ngModel)]="selectedMovies" [ngModelOptions]="{standalone: true}">
-                              <ng-option *ngFor="let movie of movies" [value]="movie.value">{{movie.name}}
-                              </ng-option>
-                            </ng-select>
+                            <div class="controls">
+                              <label for="users-edit-name">TELÉFONO MOVIL</label>
+                              <input type="number" id="users-edit-name" class="form-control"
+                                required aria-invalid="false" name="celular" [(ngModel)]="contactNew.N_TelefonoMovil">
+                            </div>
                           </div>
                         </div>
 
-                        <div class="col-12 d-flex justify-content-end flex-sm-row flex-column mt-3 mt-sm-0">
-                          <button type="submit" class="btn btn-primary mb-2 mb-sm-0 mr-sm-2">Save Changes</button>
-                          <button type="reset" class="btn btn-secondary">Cancel</button>
+                        <div class="col-6 col-md-6">
+                          <div class="form-group">
+                            <div class="controls">
+                              <label for="users-edit-name">COMENTARIOS</label>
+                              <input type="text" id="users-edit-name" class="form-control"
+                                required aria-invalid="false" 
+                                name="comentarios" [(ngModel)]="contactNew.S_Comentarios">
+                            </div>
+                          </div>
+
+                          <div class="row">                          
+                            <div class="col-6">
+                            <div class="form-group">
+                            <div class="controls">
+                              <label for="users-edit-name">EMAIL</label>
+                              <input type="email" id="users-edit-name" class="form-control"
+                                required aria-invalid="false" name="email" [(ngModel)]="contactNew.S_Email">
+                            </div>
+                          </div>
+                            </div>
+                            <div class="col-6">
+                              <div *ngIf="!vCreateUpdate">
+                                <button type="submit"class="btn btn-primary mb-sm-0 mr-sm-2">
+                                  AGREGAR CONTACTO
+                                </button>
+                              </div>
+                              <div *ngIf="vCreateUpdate">
+                                <button type="submit"class="btn btn-primary mb-sm-0 mr-sm-2">
+                                  ACTUALIZAR CONTACTO
+                                </button>
+                              </div>  
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     </form>
-                    <!-- Information form ends -->
+                    
+                    <!-- Contact form ends -->
                   </div>
-                  <!-- Information content ends -->
+                  <!-- Contact content ends -->
                 </ng-template>
               </li>
             </ul>
