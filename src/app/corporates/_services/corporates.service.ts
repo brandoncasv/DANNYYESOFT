@@ -79,7 +79,8 @@ export class CorporatesService {
     let res;
     res = this.http.put<PostContactoI>(`${this.apiContact}/${id}`, contact, {
       headers: this.header,
-    }).subscribe(res => console.log(res));
+    })//.subscribe(res => console.log(res))
+      ;
     return res;
   }
   deleteContact(id: number) {
@@ -87,10 +88,8 @@ export class CorporatesService {
     res = this.http
       .delete(`${this.apiDeleteContact}${id}`, {
         headers: this.header,
-      })
-      .subscribe((res) => {
-        console.log(res);
-      });;
+      })//.subscribe((res) => { console.log(res); });
+      ;
     return res;
   }
 }
