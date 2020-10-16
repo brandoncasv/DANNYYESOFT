@@ -91,7 +91,7 @@ export class CorporateEditComponent implements OnInit {
     }
   }
   deleteContact(id) {
-    console.log(id);
+    //console.log(id);
     this.corporateSvc.deleteContact(id);
     this.loadData();
   }
@@ -120,11 +120,11 @@ export class CorporateEditComponent implements OnInit {
       let data: PutCorporateI = await this.collectData().then((res) => {
         return res;
       });
-      console.log(data);
+      //console.log(data);
       this.corporateSvc
         .putCorporate(data, this.idCorporate)
         .subscribe((res) => {
-          console.log(res);
+          //console.log(res);
           console.log("Cambios Hechos");
         });
     }
@@ -143,17 +143,17 @@ export class CorporateEditComponent implements OnInit {
     return this.corporateArray
       .then((data) => {
         //let fecheIncorporacion = new Date(data.D_FechaIncorporacion.toDateString(), "YYYY MM DD hh:mm:ss" );
-        let inc = data.D_FechaIncorporacion;
+        //let inc = new Date("2020-09-22 00:00:00");
         newData = {
           FK_Asignado_id: data.FK_Asignado_id,
-          D_FechaIncorporacion: data.D_FechaIncorporacion.toString(),
+          D_FechaIncorporacion: data.D_FechaIncorporacion,
           S_Activo: data.S_Activo,
           S_LogoURL: data.S_LogoURL,
           S_NombreCompleto: data.S_NombreCompleto,
           S_NombreCorto: data.S_NombreCorto,
           id: data.id,
         };
-        console.log(inc.toString());
+        //console.log(data.D_FechaIncorporacion);
         return newData;
       })
       .catch();
