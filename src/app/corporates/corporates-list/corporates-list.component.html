@@ -76,9 +76,9 @@
               [columns]="columns">
               <ngx-datatable-column name="LOGO" prop="LOGO" [width]="150">
                 <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
-                  <div class="row align-items-center">
+                  <div class="d-flex align-items-center">
                     <div class="col-4">
-                      <img class="rounded-circle" src="{{row.S_LogoURL}}" height="32" width="32" alt="datatable-avatar" />
+                      <img class="rounded-circle" src="{{row.S_LogoURL}}" height="32" width="32" alt="image avatar"/>
                     </div>
                     <div class="col-8">
                     <div class="row">
@@ -111,7 +111,7 @@
                 <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
                   <div class="d-inline align-items-center">
                     <p class="line-height-1">{{row.created_at | date: 'dd MMM yyyy'}}</p>
-                    <p class="line-height-1 font-weight-light">Por {{row.S_Nombre}}</p>
+                    <p class="line-height-1 font-weight-light">Por {{row.asignado.S_Nombre}}</p>
                   </div>
                 </ng-template>
               </ngx-datatable-column>
@@ -130,12 +130,19 @@
                   <div *ngIf="row.S_Activo == 0" class="badge bg-light-danger">
                     Inactivo
                   </div>
+                  <div *ngIf="row.S_Activo == 2" class="badge bg-light-gray">
+                    Banned
+                  </div>
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="Actions" [width]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template >
-                  <a [routerLink]="['/corporativos/detalles/', row.id]"><i class="ft-eye text-primary cursor-pointer"></i></a>
-                  <a ><i class="ft-check-square text-primary cursor-pointer"></i></a>
+                  <a class="w-100" [routerLink]="['/corporativos/detalles/', row.id]">
+                    <i class="ft-eye text-primary cursor-pointer w-100"></i>
+                  </a>
+                  <a>
+                    <i class="ft-check-square text-primary cursor-pointer"></i>
+                  </a>
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>
