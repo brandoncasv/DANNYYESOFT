@@ -4,7 +4,7 @@ export interface ResponseCorporateI {
     }
 }
 export interface CorporateI {
-    id: 1;
+    id: number;
     S_NombreCompleto: string;
     S_NombreCorto: string;
     S_LogoURL: string;
@@ -17,10 +17,20 @@ export interface CorporateI {
     updated_at: Date;
     tw_users_id: number;
     FK_Asignado_id: number;
-    tw_contactos_corporativo: ContactosI[];
+    tw_contactos_corporativo: ContactosI;
     tw_contratos_corporativo: ContratosI[];
     tw_documentos_corporativo: DocumentosI[];
     tw_empresas_corporativo: EmpresasI[];
+}
+
+export interface PutCorporateI {
+    id: number;
+    S_NombreCompleto: string;
+    S_NombreCorto: string;
+    S_LogoURL: string;
+    S_Activo: number;
+    D_FechaIncorporacion: string;
+    FK_Asignado_id: number;
 }
 
 export interface EmpresasI {
@@ -47,7 +57,7 @@ export interface ContactosI {
     id: number;
     S_Nombre: string;
     S_Puesto: string;
-    S_Comentarios: null,
+    S_Comentarios: string,
     N_TelefonoFijo: number;
     N_TelefonoMovil: number;
     S_Email: string;
@@ -55,7 +65,15 @@ export interface ContactosI {
     updated_at: Date;
     tw_corporativo_id: number;
 }
-
+export interface PostContactoI {
+    S_Nombre: string;
+    S_Puesto: string;
+    S_Comentarios: string;
+    N_TelefonoFijo: number;
+    N_TelefonoMovil: number;
+    S_Email: string;
+    tw_corporativo_id: number;
+}
 export interface ContratosI {
     id: number;
     D_FechaInicio: Date;
